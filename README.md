@@ -71,8 +71,7 @@ npm start
 │   ├── todos.js
 │   └── users.js        
 ├── img/ # Contains all the project images
-│   ├── signup.svg          
-│   └── undraw_signup_image.svg    
+│   ├── signup.svg             
 ├── models/ # Database logic
 │   ├── todo.js          
 │   └── user.js
@@ -100,7 +99,6 @@ npm start
 ├── app.js
 ├── config.js
 ├── index.js
-├── input.js
 ├── package-lock.json
 ├── package.json
 ├── config.js
