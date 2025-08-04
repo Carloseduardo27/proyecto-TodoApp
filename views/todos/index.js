@@ -81,6 +81,7 @@ form.addEventListener('submit', async e => {
 });
 
 
+
 // eliminar tarea
 ul.addEventListener('click', async e => {
 	// Select delete-icon

@@ -13,6 +13,8 @@ const userExtractor = async (request, response, next) =>{
         // verifica el token con el metodo .verify tomando el token y la clave secreta
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         // se busca el usuario que corresponde el id en la base de datos con el metodo de mongoose findById
+        
+
         const user = await User.findById(decoded.id);
         request.user = user;
         
