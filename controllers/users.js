@@ -26,22 +26,22 @@ usersRouter.post('/', async (request, response) => {
       .json({ error: 'El email ya se encuentra en uso' });
   }
 
-  //Encriptar es transformar una contraseña en un código secreto
-  //saltRounds: es el numero de veces que se encripta la contraseña
-  //bcrypt.hash (es un metodo de la libreria bcrypt): encripta la contraseña
-  //new User: crea un nuevo usuario con los datos proporcionados
+  //3. Encriptar la contraseña con la libreria bcrypt y un metodo .has, primero se define el numero de rondas y luego
+  //se usa la función .hash para encriptar la contraseña
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
+
+  //4. Crear un nuevo usuario tomando como referencia el esquema de los modelos
   const newUser = new User({
     name,
     email,
     passwordHash,
   });
 
-  //Guardar el usuario en la base de datos
-  //newUser.save (es un metodo de moongose): guarda el usuario en la base de datos
-  //jwt.sign (es una funcion de la libreria jwt): genera un token de acceso con el id del usuario y una clave secreta
+  //5. Se guarda el usuario en la base de datos con el metodo de mongoose (.save)
   const savedUser = await newUser.save();
+
+  //6. Se Generar un token de acceso con la libreria jwt y el metodo .sign se usa para generar una firma que garantiza la integridad con el id y el y la clave secreta
   const token = jwt.sign(
     { id: savedUser.id },
     process.env.ACCESS_TOKEN_SECRET,
@@ -49,9 +49,7 @@ usersRouter.post('/', async (request, response) => {
       expiresIn: '1d',
     }
   );
-
-  //Enviar el email de verificacion
-  //nodemailer.createTransport (es un metodo de la libreria nodemailer): crea un transportador para enviar correos electronicos desde mi app de nodejs
+  //7. se configura el transportador para enviar el correo electronico con el metodo de nodenailer createTransport 
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -62,22 +60,21 @@ usersRouter.post('/', async (request, response) => {
       pass: process.env.EMAIL_PASS,
     },
   });
-
-  // Configuración del transportador para enviar correos electrónicos
-  //Enviar el email de verificacion
-  //transporter.sendMail (es un metodo de la libreria nodemailer): envia un correo electronico
+  //8. se envia un correo de verificacion con el metodo de nodemailer sendMail
   await transporter.sendMail({
     from: process.env.EMAIL_USER, //de
     to: savedUser.email, //a
     subject: 'Verificacion de usuario',
     html: `<a href="${PAGE_URL}/verify/${savedUser.id}/${token}">Verificar correo</a>`,
   });
-
   //Retornar una respuesta al cliente
   return response
     .status(201)
     .json('Usuario creado. por favor verifica tu correo');
 });
+
+
+
 
 // Ruta para verificar el usuario mediante un token que se envia al correo electronico
 usersRouter.patch('/:id/:token', async (request, response) => {

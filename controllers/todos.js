@@ -2,6 +2,9 @@ const todosRouter = require("express").Router();
 const User = require("../models/user");
 const Todo = require("../models/todo");
 
+
+
+// obtener todas las tareas
 todosRouter.get('/', async (request, response, next) => {
     try {
         const user = request.user;
@@ -12,6 +15,7 @@ todosRouter.get('/', async (request, response, next) => {
     }
 });
 
+// crear una tarea
 todosRouter.post('/', async (request, response, next) => {
     try {
         const user = request.user;
@@ -30,6 +34,7 @@ todosRouter.post('/', async (request, response, next) => {
     }
 });
 
+// eliminar una tarea
 todosRouter.delete('/:id', async (request, response, next) => {
     try {
         const user = request.user;
@@ -43,6 +48,7 @@ todosRouter.delete('/:id', async (request, response, next) => {
     }
 });
 
+// marcar una tarea como completada
 todosRouter.patch('/:id', async (request, response, next) => {
     try {
         const user = request.user;

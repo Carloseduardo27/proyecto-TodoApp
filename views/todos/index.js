@@ -28,6 +28,8 @@ const todoCount = () => {
 	incompletedCount();
 };
 
+
+// 
 form.addEventListener('submit', async e => {
 	e.preventDefault();
 
@@ -44,7 +46,9 @@ form.addEventListener('submit', async e => {
 	input.classList.add('focus:ring-2', 'focus:ring-violet-600');
 	invalidCheck.classList.add('hidden');
 
-	// Create list item
+
+	
+    // crea nueva tarea
 	const { data } = await axios.post('/api/todos', { text: input.value });
 	console.log(data);
 
@@ -108,6 +112,8 @@ ul.addEventListener('click', async e => {
 	}
 });
 
+
+// funcion para obtener todas las tareas
 (async () => {
 	try {
 		const { data } = await axios.get('/api/todos', {
