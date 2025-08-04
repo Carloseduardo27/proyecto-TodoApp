@@ -6,12 +6,8 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const { PAGE_URL } = require('../config'); // Importar la URL de la página desde el archivo de configuración
 
-
-// Ruta para crear un nuevo usuario
-//'/' es la ruta base del router de usuarios
-//await para esperar la respuesta de la base de datos y seguir con el flujo de la función
-//.findOne (metodo de moongose)busca un usuario por su email, si el usuario ya existe, retorna  un error
-//retrorna un error 400 si el email ya existe
+//                                           crear un  usuario
+//1. validar que los campos no estén vacíos y se hace desestructuracion de objetos
 usersRouter.post('/', async (request, response) => {
   const { name, email, password } = request.body;
   if (!name || !email || !password) {
@@ -20,9 +16,7 @@ usersRouter.post('/', async (request, response) => {
       .json({ error: 'Todos los espacios son requeridos' });
   }
 
-  // Validar que el email tenga un formato correcto
-  // Verificar si el email ya existe
-  //User.findOne (es un metodo de moongose): busca un usuario por su email
+  //2. Verificar si el email ya existe
   const userExists = await User.findOne({ email });
 
   //Si el usuario ya existe, retornar un error
@@ -48,7 +42,9 @@ usersRouter.post('/', async (request, response) => {
   //newUser.save (es un metodo de moongose): guarda el usuario en la base de datos
   //jwt.sign (es una funcion de la libreria jwt): genera un token de acceso con el id del usuario y una clave secreta
   const savedUser = await newUser.save();
-  const token = jwt.sign({ id: savedUser.id },process.env.ACCESS_TOKEN_SECRET,
+  const token = jwt.sign(
+    { id: savedUser.id },
+    process.env.ACCESS_TOKEN_SECRET,
     {
       expiresIn: '1d',
     }
@@ -67,7 +63,6 @@ usersRouter.post('/', async (request, response) => {
     },
   });
 
-
   // Configuración del transportador para enviar correos electrónicos
   //Enviar el email de verificacion
   //transporter.sendMail (es un metodo de la libreria nodemailer): envia un correo electronico
@@ -79,7 +74,9 @@ usersRouter.post('/', async (request, response) => {
   });
 
   //Retornar una respuesta al cliente
-  return response.status(201).json('Usuario creado. por favor verifica tu correo');
+  return response
+    .status(201)
+    .json('Usuario creado. por favor verifica tu correo');
 });
 
 // Ruta para verificar el usuario mediante un token que se envia al correo electronico
